@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using SSRSClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace SSRSCompanion
         public MainWindow()
         {
             InitializeComponent();
+            ReportManager reportManager = new ReportManager();
+            reportManager.InitializeSSRS();
         }
     }
 }
