@@ -23,11 +23,119 @@ namespace SSRSCompanion
     public partial class MainWindow :  MetroWindow
 
     {
+        public ReportManager reportManager { get; set; }
+        public string CurrentReportFolderPath { get; set; }
+        public string CurrentDataSourceFolderPath { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            ReportManager reportManager = new ReportManager();
-            reportManager.InitializeSSRS();
+           
+            CurrentReportFolderPath = "/";
+            CurrentDataSourceFolderPath = "/";
+            try
+            {
+                //ReportManager reportManager = new ReportManager();
+                //var folders = reportManager.GetFolders();
+                //reportManager.createDatasource(@"C:\Users\varun.robinson\Desktop\Projects\SSRS deployment\datasource\TASRMTDataSource111.rds", "/GDN_TASRMT");
+
+                //reportManager.DeployReport(@"C:\Users\varun.robinson\Desktop\Projects\SSRS deployment\datasource\DailyTeamUtilization.rdl", "/GDN_TASRMT", "test");
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.StackTrace);
+                
+            }
+
+        }
+
+        private void btnGetFolders_Click(object sender, RoutedEventArgs e)
+        {
+            reportManager = new ReportManager(txtReportServer.Text, txtUserName.Text, txtPassword.Text);
+            GetDatasourceFolderContents();
+            GetReportFolderContents();
+        }
+        private void GetDatasourceFolderContents()
+        {
+            var folders = reportManager.GetDataSources(CurrentDataSourceFolderPath);
+            dataSourceList.ItemsSource = folders;
+        }
+
+
+        private void GetReportFolderContents()
+        {
+            var folders = reportManager.GetFolders(CurrentReportFolderPath);
+            FolderList.ItemsSource = folders;
+        }
+
+        private void FolderList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (FolderList.SelectedItem != null)
+            {
+                var item = (CatalogObject)FolderList.SelectedItem;
+                if (item != null)
+                {
+                    if (item.Type == "Folder")
+                    {
+                        CurrentReportFolderPath = item.Path ;
+                        lblReportFolder.Content = CurrentReportFolderPath;
+                        GetReportFolderContents();
+                    }
+                }
+            }
+        }
+
+        private void dataSourceList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (dataSourceList.SelectedItem != null)
+            {
+                var item = (CatalogObject)dataSourceList.SelectedItem;
+                if (item != null)
+                {
+                    if (item.Type == "Folder")
+                    {
+                        CurrentDataSourceFolderPath = item.Path;
+                        
+                        GetDatasourceFolderContents();
+                    }
+                }
+            }
+        }
+
+        private void dataSourceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataSourceList.SelectedItem != null)
+            {
+                var item = (CatalogObject)dataSourceList.SelectedItem;
+                if (item != null)
+                {
+                    lblDataSource.Content = item.Path;
+                }
+            }
+        
+
+        }
+
+        private void FolderList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FolderList.SelectedItem != null)
+            {
+                var item = (CatalogObject)FolderList.SelectedItem;
+                if (item != null)
+                {
+                    //to do
+                }
+            }
+        }
+
+        private void btnBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+            if(result == System.Windows.Forms.DialogResult.OK)
+            {
+                txtLocaldirectory.Text = dialog.SelectedPath;
+            }
+           
         }
     }
 }
