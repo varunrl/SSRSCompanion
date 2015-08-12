@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSRSCompanion", "SSRSCompanion\SSRSCompanion.csproj", "{5EA2D555-81D2-4F20-86EA-2D35D8BA5C1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSRSClient", "SSRSClient\SSRSClient.csproj", "{F22B7A73-D7B8-4E38-B362-B5A5A3BB8E06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5EA2D555-81D2-4F20-86EA-2D35D8BA5C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EA2D555-81D2-4F20-86EA-2D35D8BA5C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EA2D555-81D2-4F20-86EA-2D35D8BA5C1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F22B7A73-D7B8-4E38-B362-B5A5A3BB8E06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F22B7A73-D7B8-4E38-B362-B5A5A3BB8E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F22B7A73-D7B8-4E38-B362-B5A5A3BB8E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F22B7A73-D7B8-4E38-B362-B5A5A3BB8E06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
