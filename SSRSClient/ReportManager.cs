@@ -140,7 +140,7 @@ namespace SSRSClient
 
                 //set the datasource
                 DataSourceReference dsr = new DataSourceReference();
-                dsr.Reference = serverPath + "/" + dataSourceName;
+                dsr.Reference = dataSourceName;//serverPath + "/" + dataSourceName;
 
 
                 DataSource[] dsarray = ReportingService.GetItemDataSources(serverPath + "/" + reportName);

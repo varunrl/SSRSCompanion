@@ -41,7 +41,7 @@
         </TextBox>
         <Label Content="Password :" HorizontalAlignment="Left" Margin="280,57,0,0" VerticalAlignment="Top" Width="76" FontWeight="Bold"/>
         <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="361,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnPublish" Content="Publish" HorizontalAlignment="Left" Margin="225,414,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.466,-1.4"/>
+        <Button x:Name="btnPublish" Content="Publish" HorizontalAlignment="Left" Margin="225,414,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.466,-1.4" Click="btnPublish_Click"/>
         <Label Content="Local Reports Folder : " HorizontalAlignment="Left" Margin="24,380,0,0" VerticalAlignment="Top" Width="142" FontWeight="Bold"/>
         <Label Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBox x:Name="txtLocaldirectory" HorizontalAlignment="Left" Height="23" Margin="162,383,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="319"/>

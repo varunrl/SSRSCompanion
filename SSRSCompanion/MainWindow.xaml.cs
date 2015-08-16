@@ -137,5 +137,11 @@ namespace SSRSCompanion
             }
            
         }
+
+        private void btnPublish_Click(object sender, RoutedEventArgs e)
+        {
+            //reportManager.createDatasource(txtLocaldirectory.Text, CurrentReportFolderPath);
+            reportManager.DeployReport(txtLocaldirectory.Text, CurrentReportFolderPath, CurrentDataSourceFolderPath);
+        }
     }
 }
