@@ -3,49 +3,53 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:SSRSClient="clr-namespace:SSRSClient;assembly=SSRSClient"
-        Title="SSRS Companion" Height="500" Width="600" GlowBrush="{DynamicResource AccentColorBrush}">
+        Title="SSRS Companion" Height="600" Width="800" GlowBrush="{DynamicResource AccentColorBrush}"  ResizeMode="NoResize">
     <Window.Resources>
         <DataTemplate x:Key="DataTemplateItem">
-            <Canvas Width="300" Height="30">
-                <Image Source="{Binding PictureString}" Height="28" Width="28" Canvas.Left="2" Canvas.Top="2"/>
-                <TextBlock Text="{Binding Name}" Canvas.Left="32" Canvas.Top="6" Width="172"/>
+            <Canvas Width="370" Height="22">
+                <Image Source="{Binding PictureString}" Height="20" Width="20" Canvas.Left="1" Canvas.Top="1"/>
+                <TextBlock Text="{Binding Name}" Canvas.Left="23" Canvas.Top="3" Width="350"/>
             </Canvas>
         </DataTemplate>
     </Window.Resources>
-
-    <Grid>
-        <ListBox Name="FolderList" HorizontalAlignment="Left" Height="187" Margin="320,167,0,0" VerticalAlignment="Top" Width="250" BorderBrush="Black" 
+    <Controls:MetroContentControl>
+        <TabControl>
+            <TabItem Header="Main">
+                <Grid>
+                    <ListBox Name="FolderList" HorizontalAlignment="Left" Height="250" Margin="412,167,0,0" VerticalAlignment="Top" Width="370" BorderBrush="Black" 
                  BorderThickness="1" MouseDoubleClick="FolderList_MouseDoubleClick" ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" SelectionChanged="FolderList_SelectionChanged">
 
-        </ListBox>
-        <Button Name="btnGetFolders" Content="Connect" HorizontalAlignment="Left" Margin="495,57,0,0" VerticalAlignment="Top" Width="75" Click="btnGetFolders_Click" Height="27"/>
-        <TextBox x:Name="txtReportServer" HorizontalAlignment="Left" Height="23" Margin="162,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408"/>
-        <Label Content="Report Server URL :" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.517,-0.263" Width="122" FontWeight="Bold"/>
-        <ListBox x:Name="dataSourceList" HorizontalAlignment="Left" Height="187" Margin="24,167,0,0" VerticalAlignment="Top" Width="250" BorderThickness="1" MouseDoubleClick="dataSourceList_MouseDoubleClick" SelectionChanged="dataSourceList_SelectionChanged"
+                    </ListBox>
+                    <Button Name="btnGetFolders" Content="Connect" HorizontalAlignment="Left" Margin="699,45,0,0" VerticalAlignment="Top" Width="75" Click="btnGetFolders_Click" Height="27"/>
+                    <TextBox x:Name="txtReportServer" HorizontalAlignment="Left" Height="23" Margin="154,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="620"/>
+                    <Label Content="Report Server URL :" HorizontalAlignment="Left" Margin="16,13,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.517,-0.263" Width="122" FontWeight="Bold"/>
+                    <!--<ListBox x:Name="dataSourceList" HorizontalAlignment="Left" Height="250" Margin="10,167,0,0" VerticalAlignment="Top" Width="370" BorderThickness="1" MouseDoubleClick="dataSourceList_MouseDoubleClick" SelectionChanged="dataSourceList_SelectionChanged"
+                 ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" 
+                 />-->
+                    <ListBox x:Name="LocalFolderList" HorizontalAlignment="Left" Height="250" Margin="10,167,0,0" VerticalAlignment="Top" Width="370" BorderThickness="1" 
                  ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" 
                  />
-        <Label Content="Data Source Selected : " HorizontalAlignment="Left" Margin="38,106,0,0" VerticalAlignment="Top" Width="128"/>
-        <Label Content="Report Folder Selected:" HorizontalAlignment="Left" Margin="356,106,0,0" VerticalAlignment="Top" Width="143"/>
-        <Label x:Name="lblDataSource" Content="" HorizontalAlignment="Left" Margin="38,132,0,0" VerticalAlignment="Top" Width="205"/>
-        <Label x:Name="lblReportFolder" Content="" HorizontalAlignment="Left" Margin="343,132,0,0" VerticalAlignment="Top" Width="207"/>
-        <Label Content="User Name :" HorizontalAlignment="Left" Margin="24,57,0,0" VerticalAlignment="Top" Width="86" FontWeight="Bold"/>
-        <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="110,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="147" RenderTransformOrigin="0.5,0.5">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="0.655"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Label Content="Password :" HorizontalAlignment="Left" Margin="280,57,0,0" VerticalAlignment="Top" Width="76" FontWeight="Bold"/>
-        <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="361,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnPublish" Content="Publish" HorizontalAlignment="Left" Margin="225,414,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.466,-1.4" Click="btnPublish_Click"/>
-        <Label Content="Local Reports Folder : " HorizontalAlignment="Left" Margin="24,380,0,0" VerticalAlignment="Top" Width="142" FontWeight="Bold"/>
-        <Label Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtLocaldirectory" HorizontalAlignment="Left" Height="23" Margin="162,383,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="319"/>
-        <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="495,383,0,0" VerticalAlignment="Top" Width="89" Click="btnBrowse_Click"/>
+                    <!--<Label Content="Data Source Selected : " HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="128"/>-->
+                    <Label Content="Server Report Folder Selected:" HorizontalAlignment="Left" Margin="412,106,0,0" VerticalAlignment="Top" Width="194" FontWeight="Bold"/>
+                    <!--<Label x:Name="lblDataSource" Content="" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Width="205"/>-->
+                    <Label x:Name="lblReportFolder" Content="" HorizontalAlignment="Left" Margin="412,136,0,0" VerticalAlignment="Top" Width="207"/>
+                    <Label Content="User Name :" HorizontalAlignment="Left" Margin="16,44,0,0" VerticalAlignment="Top" Width="86" FontWeight="Bold"/>
+                    <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="102,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="153" RenderTransformOrigin="0.5,0.5">
 
-    </Grid>
+                    </TextBox>
+                    <Label Content="Password :" HorizontalAlignment="Left" Margin="273,45,0,0" VerticalAlignment="Top" Width="76" FontWeight="Bold"/>
+                    <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="354,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="157"/>
+                    <Button x:Name="btnPublish" Content="Publish" HorizontalAlignment="Left" Margin="316,488,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.466,-1.4" Click="btnPublish_Click"/>
+                    <Label Content="Local Reports Folder : " HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="142" FontWeight="Bold"/>
+                    <TextBox x:Name="txtLocaldirectory" HorizontalAlignment="Left" Height="23" Margin="16,132,0,0"  VerticalAlignment="Top" Width="234" IsReadOnly="True"/>
+                    <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="273,132,0,0" VerticalAlignment="Top" Width="89" Click="btnBrowse_Click"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+            </TabItem>
+            <TabItem Header="Help">
+            </TabItem>
+        </TabControl>
+    </Controls:MetroContentControl>
 </Controls:MetroWindow>

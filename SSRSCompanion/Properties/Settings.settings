@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SSRSCompanion.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ReportServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://defravmdgsssql2.eydev.net:80/ReportServer_INST1/</Value>
+    </Setting>
+    <Setting Name="UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EYDEV\A16007982-3</Value>
+    </Setting>
+    <Setting Name="LocalDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\varun.robinson\work\GDNTASRMT\DEV\EY.GDN.TASRMT\EY.GDN.TASRMT\EY.GDN.TASRMT.Report\bin\Release</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
 </SettingsFile>

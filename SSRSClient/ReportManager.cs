@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Linq;
 using System.IO;
+using System.Xml;
+using System.Threading.Tasks;
+using System.Web.Services.Protocols;
+using System.Diagnostics;
 namespace SSRSClient
 {
     public class ReportManager
@@ -33,7 +37,7 @@ namespace SSRSClient
         {
             CatalogItem[] items = ReportingService.ListChildren (serverPath, false);
 
-            var folders = items.Select(x => new CatalogObject { Name = x.Name, Type = x.TypeName, Path = x.Path }).ToList();
+            var folders = items.OrderByDescending(x => x.ModifiedDate).Select(x => new CatalogObject { Name = x.Name + " - " + x.ModifiedDate.ToString("yyyy-MM-dd H:mm:ss"), Type = x.TypeName, Path = x.Path }).ToList();
             if (serverPath.Length > 1)
             {
                 folders.Insert(0, new CatalogObject { Name = ".. Parent", Type = "Folder", Path = serverPath.LastIndexOf('/') == 0 ? "/" : serverPath.Remove(serverPath.LastIndexOf('/')) });
@@ -53,40 +57,21 @@ namespace SSRSClient
             return folders;
         }
 
-        public string createDatasource(string localPath, string serverPath)
+        public bool createDatasource(string localFilePath, string serverFolderPath, bool overWrite, out string dataSourceName, out string dataSourcePath)
         {
-            //byte[] definition = null;
-            //Warning[] warnings = null;
-            string retRes = String.Empty;
 
-            
-            //// Read the file and put it into a byte array to pass to SRS
-            //definition = ReadFile(localPath, definition);
+            FileStream stream = File.OpenRead(localFilePath);
 
-            // // We are going to use the name of the rdl file as the name of our report
-            //string dataSourceName = Path.GetFileNameWithoutExtension(localPath);
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.Load(stream);
 
+            dataSourceName = xmlDocument.DocumentElement.Attributes["Name"].Value;
 
-            //var catalog = ReportingService.CreateCatalogItem("DataSource", dataSourceName, serverPath, true, definition, null, out warnings);
-
-            //if (warnings != null)
-            //{
-            //    retRes = String.Format("DataSource {0} created with warnings :\n", dataSourceName);
-            //    foreach (Warning warning in warnings)
-            //    {
-            //        retRes += warning.Message + "\n";
-            //    }
-            //}
-            //else
-            //{
-            //    retRes = String.Format("DataSource {0} created successfully with no warnings\n", dataSourceName);
-
-            //}
-
+            string connectionString = xmlDocument.SelectSingleNode("//ConnectString").InnerText;
 
             DataSourceDefinition definition = new DataSourceDefinition();
             definition.CredentialRetrieval = CredentialRetrievalEnum.Integrated;
-            definition.ConnectString = "Data Source=comp_name\\abcd;Initial Catalog=abcd_ODS";
+            definition.ConnectString = connectionString;
             definition.Enabled = true;
             definition.EnabledSpecified = true;
             definition.Extension = "SQL";
@@ -94,18 +79,29 @@ namespace SSRSClient
 
             definition.WindowsCredentials = true;
 
-            
-                ReportingService.CreateDataSource("Test", serverPath, true, definition, null);
-                
-           
 
+            try
+            {
+                ReportingService.CreateDataSource(dataSourceName, serverFolderPath, overWrite, definition, null);
+            }
+            catch (SoapException exception)
+            {
+                if (exception.Message.Contains("Microsoft.ReportingServices.Diagnostics.Utilities.ItemAlreadyExistsException"))
+                {
+                    Debug.Print(exception.Message);
+                }
+                else
+                {
+                    throw exception;
+                }
+            }
 
+            dataSourcePath = serverFolderPath + "/" + dataSourceName;
 
-
-            return retRes;
+            return true;
         }
 
-        public string DeployReport(string localPath, string serverPath,string dataSourceName)
+        public string DeployReport(string localPath, string serverPath,Dictionary<string,string> dataSources)
         {
             byte[] definition = null;
             Warning[] warnings = null;
@@ -138,21 +134,24 @@ namespace SSRSClient
 
                 }
 
-                //set the datasource
-                DataSourceReference dsr = new DataSourceReference();
-                dsr.Reference = dataSourceName;//serverPath + "/" + dataSourceName;
+               
 
 
                 DataSource[] dsarray = ReportingService.GetItemDataSources(serverPath + "/" + reportName);
-                DataSource ds = new DataSource();
 
-                ds = dsarray[0];
-                ds.Item = (DataSourceReference)dsr;
+                foreach(var ds in dsarray)
+                {
+                    if (dataSources.ContainsKey(ds.Name))
+                    {
+                        DataSourceReference dsr = new DataSourceReference();
+                        dsr.Reference = dataSources[ds.Name];
+                        ds.Item = (DataSourceReference)dsr;
+                        retRes += String.Format("Setting DataSource to {0}\n", dsr.Reference);
+                    }
+                }
 
                 ReportingService.SetItemDataSources(serverPath + "/" + reportName, dsarray);
-                retRes += String.Format("Data source succesfully set to {0}\n", dsr.Reference);
-
-            
+                           
 
             return retRes;
         }
