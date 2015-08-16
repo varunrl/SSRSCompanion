@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="ReportServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://defravmdgsssql2.eydev.net:80/ReportServer_INST1/</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="UserName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">EYDEV\A16007982-3</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LocalDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\varun.robinson\work\GDNTASRMT\DEV\EY.GDN.TASRMT\EY.GDN.TASRMT\EY.GDN.TASRMT.Report\bin\Release</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Password" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
