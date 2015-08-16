@@ -34,11 +34,11 @@
                     <!--<Label x:Name="lblDataSource" Content="" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Width="205"/>-->
                     <Label x:Name="lblReportFolder" Content="" HorizontalAlignment="Left" Margin="412,136,0,0" VerticalAlignment="Top" Width="207"/>
                     <Label Content="User Name :" HorizontalAlignment="Left" Margin="16,44,0,0" VerticalAlignment="Top" Width="86" FontWeight="Bold"/>
-                    <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="102,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="153" RenderTransformOrigin="0.5,0.5">
+                    <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="102,44,0,0"  VerticalAlignment="Top" Width="153" RenderTransformOrigin="0.5,0.5">
 
                     </TextBox>
                     <Label Content="Password :" HorizontalAlignment="Left" Margin="273,45,0,0" VerticalAlignment="Top" Width="76" FontWeight="Bold"/>
-                    <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="354,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="157"/>
+                    <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="354,46,0,0"  VerticalAlignment="Top" Width="157"/>
                     <Button x:Name="btnPublish" Content="Publish" HorizontalAlignment="Left" Margin="316,488,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.466,-1.4" Click="btnPublish_Click"/>
                     <Label Content="Local Reports Folder : " HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="142" FontWeight="Bold"/>
                     <TextBox x:Name="txtLocaldirectory" HorizontalAlignment="Left" Height="23" Margin="16,132,0,0"  VerticalAlignment="Top" Width="234" IsReadOnly="True"/>

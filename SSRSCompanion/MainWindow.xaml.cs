@@ -48,7 +48,7 @@ namespace SSRSCompanion
             LoadLocalfolder(txtLocaldirectory.Text);
             if(!String.IsNullOrWhiteSpace(Settings.Default.Password))
             {
-                txtPassword.Text = Settings.Default.Password.DecryptString().ToInsecureString();
+                txtPassword.Password = Settings.Default.Password.DecryptString().ToInsecureString();
             }
 
             try
@@ -81,7 +81,7 @@ namespace SSRSCompanion
         }
         private async void btnGetFolders_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtReportServer.Text) || string.IsNullOrWhiteSpace(txtUserName.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
+            if (string.IsNullOrWhiteSpace(txtReportServer.Text) || string.IsNullOrWhiteSpace(txtUserName.Text) || string.IsNullOrWhiteSpace(txtPassword.Password))
             {
                 await this.ShowMessageAsync("Error", "Please input Report Server , User Name and Password");
             }
@@ -108,10 +108,10 @@ namespace SSRSCompanion
                 Settings.Default.UserName = txtUserName.Text.Trim();
             }
 
-            if (txtPassword.Text.Trim().ToSecureString().EncryptString() != Settings.Default.Password.Trim())
+            if (txtPassword.Password.Trim().ToSecureString().EncryptString() != Settings.Default.Password.Trim())
             {
                 changed = true;
-                Settings.Default.Password = txtPassword.Text.Trim().ToSecureString().EncryptString();
+                Settings.Default.Password = txtPassword.Password.Trim().ToSecureString().EncryptString();
             }
             Settings.Default.Save();
 
@@ -130,7 +130,7 @@ namespace SSRSCompanion
             await showLoaderAsync("Loading Server Folders");
             if (reportManager == null || checkUserVariablesforchanges())
             {
-                reportManager = new ReportManager(txtReportServer.Text, txtUserName.Text, txtPassword.Text);
+                reportManager = new ReportManager(txtReportServer.Text, txtUserName.Text, txtPassword.Password);
             }
             if (reportManager != null)
             {
