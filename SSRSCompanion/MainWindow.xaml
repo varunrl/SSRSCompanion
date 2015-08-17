@@ -14,7 +14,7 @@
     </Window.Resources>
     <Controls:MetroContentControl>
         <TabControl>
-            <TabItem Header="Main">
+            <TabItem Header="Deploy From Local Folder">
                 <Grid>
                     <ListBox Name="FolderList" HorizontalAlignment="Left" Height="250" Margin="412,167,0,0" VerticalAlignment="Top" Width="370" BorderBrush="Black" 
                  BorderThickness="1" MouseDoubleClick="FolderList_MouseDoubleClick" ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" SelectionChanged="FolderList_SelectionChanged">
@@ -46,10 +46,10 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings">
+            <!--<TabItem Header="Settings">
             </TabItem>
             <TabItem Header="Help">
-            </TabItem>
+            </TabItem>-->
         </TabControl>
     </Controls:MetroContentControl>
 </Controls:MetroWindow>
