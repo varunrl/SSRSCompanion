@@ -39,6 +39,7 @@ namespace SSRSCompanion
            
             CurrentReportFolderPath = "/";
             CurrentDataSourceFolderPath = "/";
+            lblReportFolder.Content = CurrentReportFolderPath;
 
             DataSources = new Dictionary<string, string>();
 
@@ -234,7 +235,8 @@ namespace SSRSCompanion
             {
                 txtLocaldirectory.Text = dialog.SelectedPath;
                 LoadLocalfolder(txtLocaldirectory.Text.ToString());
-               
+                Settings.Default.LocalDirectory = txtLocaldirectory.Text.Trim();
+                Settings.Default.Save();
             }
            
         }
@@ -264,7 +266,11 @@ namespace SSRSCompanion
 
         private async void btnPublish_Click(object sender, RoutedEventArgs e)
         {
-            await PublishAsync();
+            MessageDialogResult result = await this.ShowMessageAsync("Confirmation", "Are you sure to upload reports to server folder " + this.CurrentReportFolderPath, MessageDialogStyle.AffirmativeAndNegative);
+            if(result == MessageDialogResult.Affirmative)
+            {
+                await PublishAsync();
+            }
            
         }
 

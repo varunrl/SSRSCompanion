@@ -22,15 +22,21 @@ namespace SSRSClient
 
         private void InitializeSSRS(string url, string userName, string password)
         {
-            if (url.IndexOf('/') == url.Length)
-            {
-                url = url + "/";
-            }
+            url = Addslash(url);
             url = url + "ReportService2010.asmx";
             ReportingService.Url = url;
             ReportingService.Credentials = new NetworkCredential(userName,password);
            
             
+        }
+
+        private static string Addslash(string url)
+        {
+            if (url.LastIndexOf('/') != url.Length - 1)
+            {
+                url = url + "/";
+            }
+            return url;
         }
 
         public List<CatalogObject> GetFolders(string serverPath)
@@ -96,7 +102,7 @@ namespace SSRSClient
                 }
             }
 
-            dataSourcePath = serverFolderPath + "/" + dataSourceName;
+            dataSourcePath = Addslash(serverFolderPath) + dataSourceName;
 
             return true;
         }
@@ -134,23 +140,35 @@ namespace SSRSClient
 
                 }
 
-               
 
 
-                DataSource[] dsarray = ReportingService.GetItemDataSources(serverPath + "/" + reportName);
+
+                DataSource[] dsarray = ReportingService.GetItemDataSources(Addslash(serverPath )+ reportName);
 
                 foreach(var ds in dsarray)
                 {
-                    if (dataSources.ContainsKey(ds.Name))
+                    var destinationReference = ((Microsoft.SqlServer.ReportingServices2010.DataSourceReference)(ds.Item));
+
+                    if (destinationReference != null)
                     {
-                        DataSourceReference dsr = new DataSourceReference();
-                        dsr.Reference = dataSources[ds.Name];
-                        ds.Item = (DataSourceReference)dsr;
-                        retRes += String.Format("Setting DataSource to {0}\n", dsr.Reference);
+                        if (destinationReference.Reference.LastIndexOf('/') != 0)
+                        {
+                            var dsname = destinationReference.Reference.Remove(destinationReference.Reference.LastIndexOf('/'));
+                            if (dataSources.ContainsKey(dsname))
+                            {
+                                if (destinationReference.Reference != dataSources[ds.Name])
+                                {
+                                    DataSourceReference dsr = new DataSourceReference();
+                                    dsr.Reference = dataSources[ds.Name];
+                                    ds.Item = (DataSourceReference)dsr;
+                                    retRes += String.Format("Setting DataSource to {0}\n", dsr.Reference);
+                                }
+                            }
+                        }
                     }
                 }
 
-                ReportingService.SetItemDataSources(serverPath + "/" + reportName, dsarray);
+                ReportingService.SetItemDataSources(Addslash(serverPath) + reportName, dsarray);
                            
 
             return retRes;
