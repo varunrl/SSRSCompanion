@@ -1,5 +1,5 @@
 # SSRS Companion
-Tool to bulk deploy SSRS reports
+Tool to bulk deploy SSRS 2012 reports
 
 This tool will deploy reports and datasources from Local directory to SSRS server in a single click.
 
