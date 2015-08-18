@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:SSRSClient="clr-namespace:SSRSClient;assembly=SSRSClient"
-        Title="SSRS Companion" Height="600" Width="800" GlowBrush="{DynamicResource AccentColorBrush}"  ResizeMode="NoResize">
+        Title="SSRS Companion" Height="800" Width="1000" GlowBrush="{DynamicResource AccentColorBrush}"  ResizeMode="CanMinimize">
     <Window.Resources>
         <DataTemplate x:Key="DataTemplateItem">
             <Canvas Width="370" Height="22">
@@ -12,44 +12,69 @@
             </Canvas>
         </DataTemplate>
     </Window.Resources>
-    <Controls:MetroContentControl>
-        <TabControl>
-            <TabItem Header="Deploy From Local Folder">
-                <Grid>
-                    <ListBox Name="FolderList" HorizontalAlignment="Left" Height="250" Margin="412,167,0,0" VerticalAlignment="Top" Width="370" BorderBrush="Black" 
-                 BorderThickness="1" MouseDoubleClick="FolderList_MouseDoubleClick" ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" SelectionChanged="FolderList_SelectionChanged">
 
-                    </ListBox>
-                    <Button Name="btnGetFolders" Content="Connect" HorizontalAlignment="Left" Margin="699,45,0,0" VerticalAlignment="Top" Width="75" Click="btnGetFolders_Click" Height="27"/>
-                    <TextBox x:Name="txtReportServer" HorizontalAlignment="Left" Height="23" Margin="154,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="620"/>
-                    <Label Content="Report Server URL :" HorizontalAlignment="Left" Margin="16,13,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.517,-0.263" Width="122" FontWeight="Bold"/>
-                    <!--<ListBox x:Name="dataSourceList" HorizontalAlignment="Left" Height="250" Margin="10,167,0,0" VerticalAlignment="Top" Width="370" BorderThickness="1" MouseDoubleClick="dataSourceList_MouseDoubleClick" SelectionChanged="dataSourceList_SelectionChanged"
-                 ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" 
-                 />-->
-                    <ListBox x:Name="LocalFolderList" HorizontalAlignment="Left" Height="250" Margin="10,167,0,0" VerticalAlignment="Top" Width="370" BorderThickness="1" 
-                 ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" 
-                 />
-                    <!--<Label Content="Data Source Selected : " HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="128"/>-->
-                    <Label Content="Server Report Folder Selected:" HorizontalAlignment="Left" Margin="412,106,0,0" VerticalAlignment="Top" Width="194" FontWeight="Bold"/>
-                    <!--<Label x:Name="lblDataSource" Content="" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Width="205"/>-->
-                    <Label x:Name="lblReportFolder" Content="" HorizontalAlignment="Left" Margin="412,136,0,0" VerticalAlignment="Top" Width="207"/>
-                    <Label Content="User Name :" HorizontalAlignment="Left" Margin="16,44,0,0" VerticalAlignment="Top" Width="86" FontWeight="Bold"/>
-                    <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="102,44,0,0"  VerticalAlignment="Top" Width="153" RenderTransformOrigin="0.5,0.5">
+                <Grid HorizontalAlignment="Center" Margin="5">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Top" Margin="0,10" >
+                            <Label Content="Server URL :"  Width="82" FontWeight="Bold" Height="30"/>
+                            <TextBox x:Name="txtReportServer"  Width="316" Margin="5,0" Height="30"/>
+                            <Label Content="User :"  Width="47" FontWeight="Bold" Height="30"/>
+                            <TextBox x:Name="txtUserName"  Width="153" Margin="5,0"  Height="30"/>
+                            <Label Content="Password :"  FontWeight="Bold" Height="30"/>
+                            <PasswordBox x:Name="txtPassword"    Width="157" Margin="5,0" Height="30"/>
+                            <Button Name="btnGetFolders" Content="Connect" Width="75" Click="btnGetFolders_Click"  Height="30" />
 
-                    </TextBox>
-                    <Label Content="Password :" HorizontalAlignment="Left" Margin="273,45,0,0" VerticalAlignment="Top" Width="76" FontWeight="Bold"/>
-                    <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="354,46,0,0"  VerticalAlignment="Top" Width="157"/>
-                    <Button x:Name="btnPublish" Content="Publish" HorizontalAlignment="Left" Margin="316,488,0,0" VerticalAlignment="Top" Width="131" RenderTransformOrigin="0.466,-1.4" Click="btnPublish_Click"/>
-                    <Label Content="Local Reports Folder : " HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="142" FontWeight="Bold"/>
-                    <TextBox x:Name="txtLocaldirectory" HorizontalAlignment="Left" Height="23" Margin="16,132,0,0"  VerticalAlignment="Top" Width="234" IsReadOnly="True"/>
-                    <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="273,132,0,0" VerticalAlignment="Top" Width="89" Click="btnBrowse_Click"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <StackPanel Orientation="Vertical" Margin="0,0,5,0">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5" HorizontalAlignment="Left">
+                                    <Label Content="Local Reports Folder : " FontWeight="Bold" Height="30" HorizontalAlignment="Left"/>
+                                    <Button x:Name="btnBrowse" Content="Browse" Width="60" Click="btnBrowse_Click" Height="30" Margin="5,0"/>
+                                    <Button x:Name="btnRefresh" Content="Refresh" Width="60" Height="30" Click="btnRefresh_Click"/>
+                                </StackPanel>
+                                <TextBox x:Name="txtLocaldirectory" Width="315" IsReadOnly="True" Height="30" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                                <ListBox x:Name="LocalFolderList"  Height="250"  Width="315" BorderThickness="1"  ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" HorizontalAlignment="Left" Margin="0,0,0,5" BorderBrush="#CC119EDA"   />
+                                <Button x:Name="btnPublish" Content="Publish"  Width="131"  Click="btnPublish_Click" Height="30" IsEnabled="False"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5,0">
+                                <Label Content="Server Report Folder Selected:"  Width="194" FontWeight="Bold" Height="30" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                                <Label x:Name="lblReportFolder" Content="" VerticalAlignment="Top"  Height="30" Margin="0,0,0,5" HorizontalAlignment="Left" Width="315"/>
+                                <ListBox Name="FolderList" Height="250"  Width="315" BorderBrush="#CC119EDA" 
+                                                                    BorderThickness="1" MouseDoubleClick="FolderList_MouseDoubleClick" ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" SelectionChanged="FolderList_SelectionChanged" Margin="0,0,0,5">
+                                </ListBox>
+                                <Button x:Name="btnDownload" Content="Download To Local Folder"  Width="174"  Click="btnDownload_Click" Height="30" IsEnabled="False" />
+
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5,0,0,0">
+                                <Label Content="Data Source Selected : " Width="194" FontWeight="Bold" Height="30" HorizontalAlignment="Left" Margin="0,0,0,5"/>
+                                <Label x:Name="lblDataSource"   Width="315" Height="30" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                                <ListBox x:Name="dataSourceList"  Height="250"  Width="315" BorderThickness="1" MouseDoubleClick="dataSourceList_MouseDoubleClick" SelectionChanged="dataSourceList_SelectionChanged"
+                                                            ItemTemplate="{DynamicResource DataTemplateItem}" ItemsSource="{Binding Items}" HorizontalAlignment="Left" Padding="0" Margin="0,0,0,5" BorderBrush="#CC119EDA"  />
+                                <Button x:Name="btnSetDataSources" Content="Set DataSources" Width="150" Margin="0" Click="btnSetDataSources_Click" IsEnabled="False"/>
+
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <DataGrid x:Name="DataSourceObjectGrid" Width="980" Height="330" BorderThickness="1" ItemsSource="{Binding}" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="Is Selected" Binding="{Binding Path=IsSelected}"></DataGridCheckBoxColumn>
+                                    <DataGridTextColumn Header="Type"  Binding="{Binding Path=Type}" IsReadOnly="True"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Object Name"  Binding="{Binding Path=Name}" IsReadOnly="True"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Modified On"  Binding="{Binding Path=ModifiedOn}" IsReadOnly="True"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Path"  Binding="{Binding Path=Path}" IsReadOnly="True"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="DataSource Name"  Binding="{Binding Path=DataSourceName}" IsReadOnly="True"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="DataSource Type"  Binding="{Binding Path=DataSourceType}" IsReadOnly="True"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Refered DataSource"  Binding="{Binding Path=ReferedDaraSource}" IsReadOnly="True"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                      
+                    </StackPanel>
+
+
+                   
+                    
 
                 </Grid>
-            </TabItem>
-            <!--<TabItem Header="Settings">
-            </TabItem>
-            <TabItem Header="Help">
-            </TabItem>-->
-        </TabControl>
-    </Controls:MetroContentControl>
+           
 </Controls:MetroWindow>

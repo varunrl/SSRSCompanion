@@ -42,13 +42,54 @@ namespace SSRSClient
         public List<CatalogObject> GetFolders(string serverPath)
         {
             CatalogItem[] items = ReportingService.ListChildren (serverPath, false);
-
-            var folders = items.OrderByDescending(x => x.ModifiedDate).Select(x => new CatalogObject { Name = x.Name + " - " + x.ModifiedDate.ToString("yyyy-MM-dd H:mm:ss"), Type = x.TypeName, Path = x.Path }).ToList();
+            
+            var folders = items.OrderBy(x => x.Name).Select(x => new CatalogObject { Name = x.Name , Type = x.TypeName, Path = x.Path }).ToList();
             if (serverPath.Length > 1)
             {
                 folders.Insert(0, new CatalogObject { Name = ".. Parent", Type = "Folder", Path = serverPath.LastIndexOf('/') == 0 ? "/" : serverPath.Remove(serverPath.LastIndexOf('/')) });
             }
             return folders;
+        }
+
+
+        public List<DataSourceObject> GetFoldersWithDetails(string serverPath)
+        {
+            CatalogItem[] items = ReportingService.ListChildren(serverPath, false);
+
+
+            object locker = new object();
+
+            var dsObjects = new List<DataSourceObject>();
+
+            Parallel.ForEach(items.Where(x => x.TypeName == "Report" || x.TypeName == "DataSet"), currentfile =>
+            {
+                DataSource[] dsarray = ReportingService.GetItemDataSources(currentfile.Path);
+                lock (locker)
+                {
+                    foreach(var ds in dsarray)
+                    {
+                        var type = ds.Item is DataSourceReference ? DSType.Reference : (ds.Item is DataSourceDefinition ? DSType.Definition : DSType.Invalid);
+                        dsObjects.Add(new DataSourceObject
+                            {
+                                Name = currentfile.Name,
+                                ModifiedOn = currentfile.ModifiedDate.ToString("yyyy-MM-dd H:mm:ss"),
+                                Path = currentfile.Path,
+                                Type = currentfile.TypeName,
+                                DataSourceName = ds.Name,
+                                DataSourceType = type,
+                                ReferedDaraSource = (ds.Item as DataSourceReference) == null ? "" : (ds.Item as DataSourceReference).Reference,
+                                IsSelected = true
+                                
+                            }
+                            );
+                    }
+                    
+                }
+                
+            });
+
+
+            return dsObjects;
         }
 
         public List<CatalogObject> GetDataSources(string serverPath)
@@ -63,7 +104,7 @@ namespace SSRSClient
             return folders;
         }
 
-        public bool createDatasource(string localFilePath, string serverFolderPath, bool overWrite, out string dataSourceName, out string dataSourcePath)
+        public bool createDatasource(string localFilePath, string serverFolderPath, bool overWrite)
         {
 
             FileStream stream = File.OpenRead(localFilePath);
@@ -71,7 +112,7 @@ namespace SSRSClient
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(stream);
 
-            dataSourceName = xmlDocument.DocumentElement.Attributes["Name"].Value;
+            var dataSourceName = Path.GetFileNameWithoutExtension(localFilePath);
 
             string connectionString = xmlDocument.SelectSingleNode("//ConnectString").InnerText;
 
@@ -102,12 +143,11 @@ namespace SSRSClient
                 }
             }
 
-            dataSourcePath = Addslash(serverFolderPath) + dataSourceName;
 
             return true;
         }
 
-        public string DeployReport(string localPath, string serverPath,Dictionary<string,string> dataSources)
+        public string DeployReport(string localPath, string serverPath)
         {
             byte[] definition = null;
             Warning[] warnings = null;
@@ -123,8 +163,8 @@ namespace SSRSClient
 
 
             // Now lets use this information to publish the report
-           
-                var catalog = ReportingService.CreateCatalogItem("Report", reportName, serverPath, true, definition, null,out warnings);
+
+            var catalog = ReportingService.CreateCatalogItem(ReportManager.GetFileType(Path.GetExtension(localPath)), reportName, serverPath, true, definition, null, out warnings);
 
                 if (warnings != null)
                 {
@@ -138,41 +178,36 @@ namespace SSRSClient
                 {
                     retRes = String.Format("Report {0} created successfully with no warnings\n", reportName);
 
-                }
+                }       
 
+            return retRes;
+        }
 
-
-
-                DataSource[] dsarray = ReportingService.GetItemDataSources(Addslash(serverPath )+ reportName);
-
-                foreach(var ds in dsarray)
+        public void SetDataSources(List<DataSourceObject> list, string datasourcePath)
+        {
+            Parallel.ForEach(list.Where(x => x.IsSelected == true).GroupBy(x => new { Name = x.Name, Path = x.Path }), item => {
+                
+                DataSource[] dsarray = ReportingService.GetItemDataSources(item.Key.Path);
+                foreach (var ds in dsarray)
                 {
-                    var destinationReference = ((Microsoft.SqlServer.ReportingServices2010.DataSourceReference)(ds.Item));
-
-                    if (destinationReference != null)
+                    foreach(var gItem in item)
                     {
-                        if (destinationReference.Reference.LastIndexOf('/') != 0)
+                        if (ds.Name == gItem.DataSourceName)
                         {
-                            var dsname = destinationReference.Reference.Remove(destinationReference.Reference.LastIndexOf('/'));
-                            if (dataSources.ContainsKey(dsname))
-                            {
-                                if (destinationReference.Reference != dataSources[ds.Name])
-                                {
-                                    DataSourceReference dsr = new DataSourceReference();
-                                    dsr.Reference = dataSources[ds.Name];
-                                    ds.Item = (DataSourceReference)dsr;
-                                    retRes += String.Format("Setting DataSource to {0}\n", dsr.Reference);
-                                }
-                            }
+                            DataSourceReference dsr = new DataSourceReference();
+                            dsr.Reference = datasourcePath;
+                            ds.Item = (DataSourceReference)dsr;
                         }
                     }
                 }
 
-                ReportingService.SetItemDataSources(Addslash(serverPath) + reportName, dsarray);
-                           
+                ReportingService.SetItemDataSources(item.Key.Path, dsarray);
 
-            return retRes;
+            });
+
+          
         }
+
 
         private static byte[] ReadFile(string localPath, byte[] definition)
         {
@@ -184,5 +219,61 @@ namespace SSRSClient
         }
 
 
+
+        public void DownloadReports(string localDirectory, string CurrentReportFolderPath)
+        {
+            CatalogItem[] items = ReportingService.ListChildren(CurrentReportFolderPath, false);
+
+            Parallel.ForEach(items.Where(x => x.TypeName == "Report" || x.TypeName == "DataSource" || x.TypeName == "DataSet"), currentfile =>
+            {
+                DownloadItem(localDirectory, currentfile);
+            });
+          
+        }
+
+
+        private void DownloadItem(string localDirectory, CatalogItem item)
+        {
+            byte[] reportDefinition = null;
+            System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+
+            reportDefinition = ReportingService.GetItemDefinition(item.Path);
+            MemoryStream stream = new MemoryStream(reportDefinition);
+
+            doc.Load(stream);
+            doc.Save(Path.Combine(localDirectory + @"/",
+                item.Name + GetExtensionfromType(item.TypeName)));
+        }
+
+        private string GetExtensionfromType(string Type)
+        {
+            switch(Type)
+            {
+                case "Report":
+                    return ".rdl";
+                case "DataSource":
+                    return ".rds";
+                case "DataSet":
+                    return ".rsd";
+                default:
+                    return ".unknown";
+            }
+        }
+
+
+        public static string GetFileType(string p)
+        {
+            switch (System.IO.Path.GetExtension(p))
+            {
+                case ".rdl":
+                    return "Report";
+                case ".rds":
+                    return "DataSource";
+                case ".rsd":
+                    return "DataSet";
+                default:
+                    return "NA";
+            }
+        }
     }
 }
