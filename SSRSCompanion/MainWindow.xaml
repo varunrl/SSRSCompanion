@@ -64,7 +64,7 @@
                                     <DataGridTextColumn Header="Path"  Binding="{Binding Path=Path}" IsReadOnly="True"></DataGridTextColumn>
                                     <DataGridTextColumn Header="DataSource Name"  Binding="{Binding Path=DataSourceName}" IsReadOnly="True"></DataGridTextColumn>
                                     <DataGridTextColumn Header="DataSource Type"  Binding="{Binding Path=DataSourceType}" IsReadOnly="True"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Refered DataSource"  Binding="{Binding Path=ReferedDaraSource}" IsReadOnly="True"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Refered DataSource"  Binding="{Binding Path=ReferedDataSource}" IsReadOnly="True"></DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>

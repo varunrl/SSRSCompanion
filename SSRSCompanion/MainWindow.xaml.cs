@@ -27,12 +27,14 @@ namespace SSRSCompanion
     public partial class MainWindow :  MetroWindow
 
     {
-        public ReportManager reportManager { get; set; }
+        public IReportManager reportManager { get; set; }
         public string CurrentReportFolderPath { get; set; }
         public string CurrentDataSourceFolderPath { get; set; }
 
         public string SelectedDataSource { get; set; }
         public Dictionary<string,string> DataSources { get;set; }
+
+        public int version { get; set; }
 
         public ProgressDialogController progressController { get;set; }
         public MainWindow()
@@ -52,20 +54,6 @@ namespace SSRSCompanion
             if(!String.IsNullOrWhiteSpace(Settings.Default.Password))
             {
                 txtPassword.Password = Settings.Default.Password.DecryptString().ToInsecureString();
-            }
-
-            try
-            {
-                //ReportManager reportManager = new ReportManager();
-                //var folders = reportManager.GetFolders();
-                //reportManager.createDatasource(@"C:\Users\varun.robinson\Desktop\Projects\SSRS deployment\datasource\TASRMTDataSource111.rds", "/GDN_TASRMT");
-
-                //reportManager.DeployReport(@"C:\Users\varun.robinson\Desktop\Projects\SSRS deployment\datasource\DailyTeamUtilization.rdl", "/GDN_TASRMT", "test");
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.StackTrace);
-                
             }
 
         }
@@ -97,29 +85,52 @@ namespace SSRSCompanion
                 else
                 {
                     await showLoaderAsync("Loading Server Folders");
-                    if (reportManager == null || checkUserVariablesforchanges())
-                    {
-                        reportManager = new ReportManager(txtReportServer.Text, txtUserName.Text, txtPassword.Password);
-                        CurrentReportFolderPath = "/";
-                        CurrentDataSourceFolderPath = "/";
-                    }
-
-                    Task T1 =  LoadFolderAndDetails();
-                    Task T2 =  GetDatasourceFolderContentsAsync();
-                    await Task.WhenAll(T1,T2);
-                    btnDownload.IsEnabled = true;
-                    btnPublish.IsEnabled = true;
+                    await InitialLoad(2010);
                     
                 }
+                await hideLoaderAsync();
+                return;
             }
             catch (Exception exception)
             {
-                LogException(exception);
+                
 
             }
             
+            try
+            {
+                await InitialLoad(2005);
+            }
+            catch (Exception exception1)
+            {
+                LogException(exception1);
+            }
             await hideLoaderAsync();
             
+        }
+
+        private async Task InitialLoad(int year)
+        {
+            if (reportManager == null || checkUserVariablesforchanges() || year != version)
+            {
+                version = year;
+                if (version == 2010)
+                {
+                    reportManager = new ReportManager2010(txtReportServer.Text, txtUserName.Text, txtPassword.Password);
+                }else
+                {
+                    reportManager = new ReportManager2005(txtReportServer.Text, txtUserName.Text, txtPassword.Password);
+                }
+
+                CurrentReportFolderPath = "/";
+                CurrentDataSourceFolderPath = "/";
+            }
+
+            Task T1 = LoadFolderAndDetails();
+            Task T2 = GetDatasourceFolderContentsAsync();
+            await Task.WhenAll(T1, T2);
+            btnDownload.IsEnabled = true;
+            btnPublish.IsEnabled = true;
         }
         private void LogException(Exception exception)
         {
@@ -249,7 +260,7 @@ namespace SSRSCompanion
                     {
                         lblDataSource.Content = item.Path;
 
-                        if(item.Type == "DataSource")
+                        if (item.Type == "DataSource" )
                         {
                             SelectedDataSource = item.Path;
                             btnSetDataSources.IsEnabled = true;
@@ -312,11 +323,14 @@ namespace SSRSCompanion
 
         private void LoadLocalfolder(string path)
         {
-            if (!String.IsNullOrWhiteSpace(path))
+            if (!String.IsNullOrWhiteSpace(path) && Directory.Exists(path))
             {
                 DirectoryInfo d = new DirectoryInfo(path);
-                var files = d.GetFiles().Select(x => new CatalogObject { Name = x.Name, Path = x.FullName, Type = ReportManager.GetFileType(x.FullName) });
+                var files = d.GetFiles().Select(x => new CatalogObject { Name = x.Name, Path = x.FullName, Type = Utility.GetFileType(x.FullName) });
                 LocalFolderList.ItemsSource = files;
+            }else
+            {
+                 txtLocaldirectory.Text = "";
             }
         }
 

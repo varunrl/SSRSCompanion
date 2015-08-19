@@ -50,9 +50,13 @@
   <ItemGroup>
     <Compile Include="CatalogObject.cs" />
     <Compile Include="DataSourceObject.cs" />
+    <Compile Include="IReportManager.cs" />
+    <Compile Include="ReportingService2005.cs" />
     <Compile Include="ReportingService2010.cs" />
-    <Compile Include="ReportManager.cs" />
+    <Compile Include="ReportManager2005.cs" />
+    <Compile Include="ReportManager2010.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -21,7 +21,7 @@ namespace SSRSClient
 
         public DSType DataSourceType { get; set; }
 
-        public string ReferedDaraSource { get; set; }
+        public string ReferedDataSource { get; set; }
 
         
     }
