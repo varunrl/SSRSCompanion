@@ -370,7 +370,7 @@ namespace SSRSCompanion
 
         private void PublishToReportServer(string localDirectory)
         {
-            Parallel.ForEach(Directory.GetFiles(localDirectory), currentfile =>
+            Parallel.ForEach(Directory.GetFiles(localDirectory), new ParallelOptions { MaxDegreeOfParallelism = 4 }, currentfile =>
             {
                 if (System.IO.Path.GetExtension(currentfile) == ".rds")
                 {

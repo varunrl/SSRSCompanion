@@ -98,7 +98,7 @@ namespace SSRSClient
         {
             CatalogItem[] items = ReportingService.ListChildren(CurrentReportFolderPath, false);
 
-            Parallel.ForEach(items.Where(x => x.TypeName == "Report" || x.TypeName == "DataSource" || x.TypeName == "DataSet"), currentfile =>
+            Parallel.ForEach(items.Where(x => x.TypeName == "Report" || x.TypeName == "DataSource" || x.TypeName == "DataSet"),new ParallelOptions { MaxDegreeOfParallelism = 4 }, currentfile =>
             {
                 DownloadItem(localDirectory, currentfile);
             });
@@ -136,7 +136,7 @@ namespace SSRSClient
 
             var dsObjects = new List<DataSourceObject>();
 
-            Parallel.ForEach(items.Where(x => x.TypeName == "Report" || x.TypeName == "DataSet"), currentfile =>
+            Parallel.ForEach(items.Where(x => x.TypeName == "Report" || x.TypeName == "DataSet"), new ParallelOptions { MaxDegreeOfParallelism = 4 },currentfile =>
             {
                 DataSource[] dsarray = ReportingService.GetItemDataSources(currentfile.Path);
                 lock (locker)
@@ -165,7 +165,7 @@ namespace SSRSClient
 
         public void SetDataSources(List<DataSourceObject> list, string datasourcePath)
         {
-            Parallel.ForEach(list.Where(x => x.IsSelected == true).GroupBy(x => new { Name = x.Name, Path = x.Path }), item =>
+            Parallel.ForEach(list.Where(x => x.IsSelected == true).GroupBy(x => new { Name = x.Name, Path = x.Path }),new ParallelOptions { MaxDegreeOfParallelism = 4 }, item =>
             {
                 DataSource[] dsarray = ReportingService.GetItemDataSources(item.Key.Path);
                 foreach (var ds in dsarray)
@@ -240,6 +240,7 @@ namespace SSRSClient
             url = url + "ReportService2010.asmx";
             ReportingService.Url = url;
             ReportingService.Credentials = new NetworkCredential(userName, password);
+            ReportingService.Timeout = 600000;
         }
     }
 }
